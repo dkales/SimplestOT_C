@@ -10,3 +10,5 @@ The pure c version has a performance decrease of 2-2.5x compared to the optimize
 You may need to change the definitions in crypto_int_XX.h on your target system.
 
 All code is in the public domain.
+
+*Disclaimer*: This is academic code, and should not be used as-is in any production system. There are no guarantees for correctness, security, etc.
