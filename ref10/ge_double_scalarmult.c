@@ -43,11 +43,8 @@ and b = b[0]+256*b[1]+...+256^31 b[31].
 B is the Ed25519 base point (x,4/5) with x positive.
 */
 
-static const unsigned char zero[32];
-
 void ge_scalarmult_vartime(ge_p3 *r, const unsigned char *a,const ge_p3 *A) {
     signed char aslide[256];
-    signed char bslide[256];
     ge_cached Ai[8]; /* A,3A,5A,7A,9A,11A,13A,15A */
     ge_p1p1 t;
     ge_p3 u;
@@ -55,7 +52,6 @@ void ge_scalarmult_vartime(ge_p3 *r, const unsigned char *a,const ge_p3 *A) {
     int i;
 
     slide(aslide,a);
-    slide(bslide,zero);
 
     ge_p3_to_cached(&Ai[0],A);
     ge_p3_dbl(&t,A); ge_p1p1_to_p3(&A2,&t);
@@ -70,7 +66,7 @@ void ge_scalarmult_vartime(ge_p3 *r, const unsigned char *a,const ge_p3 *A) {
     ge_p3_0(r);
 
     for (i = 255;i >= 0;--i) {
-        if (aslide[i] || bslide[i]) break;
+        if (aslide[i]) break;
     }
 
     for (;i >= 0;--i) {
@@ -82,14 +78,6 @@ void ge_scalarmult_vartime(ge_p3 *r, const unsigned char *a,const ge_p3 *A) {
         } else if (aslide[i] < 0) {
             ge_p1p1_to_p3(&u,&t);
             ge_sub(&t,&u,&Ai[(-aslide[i])/2]);
-        }
-
-        if (bslide[i] > 0) {
-            ge_p1p1_to_p3(&u,&t);
-            ge_madd(&t,&u,&Bi[bslide[i]/2]);
-        } else if (bslide[i] < 0) {
-            ge_p1p1_to_p3(&u,&t);
-            ge_msub(&t,&u,&Bi[(-bslide[i])/2]);
         }
 
         ge_p1p1_to_p3(r,&t);
