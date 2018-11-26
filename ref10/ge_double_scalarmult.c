@@ -36,13 +36,6 @@ static ge_precomp Bi[8] = {
 #include "base2.h"
 } ;
 
-/*
-r = a * A + b * B
-where a = a[0]+256*a[1]+...+256^31 a[31].
-and b = b[0]+256*b[1]+...+256^31 b[31].
-B is the Ed25519 base point (x,4/5) with x positive.
-*/
-
 void ge_scalarmult_vartime(ge_p3 *r, const unsigned char *a,const ge_p3 *A) {
     signed char aslide[256];
     ge_cached Ai[8]; /* A,3A,5A,7A,9A,11A,13A,15A */
@@ -83,6 +76,13 @@ void ge_scalarmult_vartime(ge_p3 *r, const unsigned char *a,const ge_p3 *A) {
         ge_p1p1_to_p3(r,&t);
     }
 }
+
+/*
+r = a * A + b * B
+where a = a[0]+256*a[1]+...+256^31 a[31].
+and b = b[0]+256*b[1]+...+256^31 b[31].
+B is the Ed25519 base point (x,4/5) with x positive.
+*/
 
 void ge_double_scalarmult_vartime(ge_p2 *r,const unsigned char *a,const ge_p3 *A,const unsigned char *b)
 {
